@@ -61,13 +61,14 @@ Now it's time to glue these concepts together: ![Architecture overview](http://w
 
 I would like to underline some aspects of this picture. 
 
-- First of all, it's very clear that commands and queries are very separated. The incoming commands and outgoing query results are only loosely coupled by events.
+- First of all, it's very clear that commands and queries are separated. They have different API's. The incoming commands and outgoing query results are loosely coupled by events.
 - Second: it's really important to understand the power of events; if I replay the events which are stored in the eventstore, I can build a totally new service based on all events which ever occurred in the system since the beginning and thereby add functionality without touching any existing code. 
 - Third: Since it's so easy to tailor my read-model (I just make a new one), I can deliver very specific data in no time. For instance, I could build a view which does nothing else than build up complicated monthly or yearly reports. No need to bother a central database with that task. Or I could build a view which combines several domain objects into information completely tailored to my needs. Again: no need to do complex joins on a central database.
 
 **TODO:** better architecture picture (mainly bigger. SVG?)
 
 {>>Should we mention eventual consistency here? In my experience a lot of people have trouble grasping this concept as it appears to them as a loss of control.<<}
+  {>> MMz - Yes please! <<}
 
 ## Why should u use it (or not)
 
@@ -110,19 +111,24 @@ From "Tarpit":
 		- If your application can be split up into cleanly separated components CQRS *can* score great on this front (e.g. Motown add-ons are really easy to grasp as they deliver a specific piece of functionality and interact with the domain using commands and events). However, when defining more straight-forward functionality (e.g. CRUD with a bit of business logic, which is a **major** part of **a lot** of applications) it is often a cause for complexity as you have to follow the flow of commands and events over multiple components.
 		- "In cases (such as existing large systems) where this separation cannot be directly applied we believe the focus should be on avoiding state, avoiding **explicit** control where possible, and striving at all costs to get rid of code."
 	- Complexity caused by Code Volume
-		- Not sure what the impact of CQRS is here. In my experience it's pretty verbose (i.e. commands, events) but it does allow for cleanly separated components (which tend to be easier to grasp by themselves). What are your experiences here?
+		- Not sure what the impact of CQRS is here. In my experience it's pretty verbose (i.e. commands, events) but it does allow for cleanly separated components (which tend to be easier to grasp by themselves). What are your experiences here? {>> MMz - In my opinion it's verbose and there's a lot of duplication in commands and events. I've seen it @ lendex, seen it @ motown and heard the same problem arise @ windcentrale. Only 'solution' I can think of: climb up the ladder of abstraction and *generate* events and commands from one source, for instance some sort of specification. This, however, raises a lot of other issues (for instance will changes in the code be reflected in the spec, etc) <<} 
 - Accidents and Essence:
 	- Essential Complexity: is inherent in, and the essence of, the problem (as seen by the users).
 		- We hence see essential complexity as “the complexity with which the team will have to be concerned, even in the ideal world”.
 	- Accidental Complexity: is all the rest — complexity with which the development team would not have to deal in the ideal world (e.g. complexity arising from performance issues and from suboptimal language and infrastructure). https://www.dropbox.com/s/42xfqu0ivts3jp4/Screenshot%202015-05-16%2016.24.59.png?dl=0
-	- 
-
-
-
+	I think CQRS is in the 'accidental complexity' corner; the user probably couldn't care less. 
 
 ### Framework selection criteria (James Shore)
 
 {>>@MMz_, can you add a link to an article by James Shore? I can't find this on the interwebs.<<}
+  {>> http://www.letscodejavascript.com/v3/blog/2015/01/angular_review <<}
+  
+- Lock in: Boo! Because there is no generally accepted API / standard for CQRS frameworks, it's almost impossible to switch between different frameworks at the moment.
+- Opinionated Architecture. Boo! From the axon documentation: "Axon does not, in any way, try to hide the CQRS architecture or any of its components from developers. Therefore, depending on team size, it is still advisable to have one or more developers with a thorough understanding of CQRS on each team."
+- Accidental Complexity. It's a toss up. There's a lot of learning involved in switching to CQRS. This takes time; time a customer probably isn't prepared to invest. Then again: extending and scaling the application is really easy.
+- Testability. Yay! Especially when using eventsourcing, testing is fantastic. Also: repeating bugs in production is really easy.
+- Performance. {>> **TODO:** I don't know! Do we have some real world measurements on this one? <<}
+- Monitoring. Yay! Especially when eventsourcing is used. Automatic audit trail is really helpfull here. 
 
 **TODO:** Add pros and cons and sort them in order of priority
 
@@ -153,7 +159,7 @@ Integration with other applications can be cumbersome work. The strict definitio
 ## Alternatives
 
 - Datomic {>>@MMz_, I think you know the most about Datomic. I think I know why it's an alternative to event sourcing with regards to the acknowledgement of time as a concept but maybe you can elaborate on this.<<}
-- PGQ -> alternative to event sourcing?
+- PGQ -> alternative to event sourcing? -> yep, I think it is! in terms of read scalability 
 - Reporting database
 - Architectural concepts within DDD, CQRS seems like an event-driven evolution of these. If going all-in CQRS doesn't seem like a fit, DDD could be the sweet spot. (plain ol' CRUD > DDD > CQRS)
 
