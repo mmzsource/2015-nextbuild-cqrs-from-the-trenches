@@ -37,6 +37,8 @@ The CQRS pattern was first introduced by Greg Young and Udi Dahan. They took ins
 
 Basically CQRS is an architectural pattern that says that instead of having one monolithic API to an application, you split that into two: one for commands and one for queries - hence the name.
 
+It aims to help developers build scalable and extensible applications.
+
 ## Terms & Relations
 
 If you follow the Command Query Separation pattern, there are 2 types of methods in your code: Commands and Queries.
@@ -69,25 +71,35 @@ I would like to underline some aspects of this picture.
 
 Now the big question is: why should you use this pattern, or shouldn't you? 
 
-In the end, CQRS is just another tool in the toolbox, well suited for some tasks, but completely unusable for others. Let's discuss some general advantages and disadvantages before zooming into our experiences in practice.
+In the end, CQRS is just another tool in the toolbox, well suited for some tasks, but completely unusable for others. Let's discuss some general advantages and disadvantages before talking about its sweet spots and zooming into our experiences in practice.
 
 ### Pros
 
-- Often reading data is much more frequent than writing. CQRS totally separates the two, making it a lot easier to tailor write - and read performance separately. Furthermore: reads from a user perspective has to be more performant than writes. User tends to find it easier to accept a slower response when data is changed. This also fits really nicely with the CQRS way of working.
-- By splitting the application into two components, it allows you to build and think separately about two different models: commands and queries. This really helps making better API's which are easier to maintain. It's totally clear where changes are needed (command side or query side).
-- If something goes wrong on the query side of your code: no problem. Just fix the bug, delete the data and replay the events with the bugfree component.
+- Separation of reads and writes. 
+  - Often reading data is much more frequent than writing. CQRS totally separates the two, making it a lot easier to tailor write - and read performance separately. Furthermore: reads from a user perspective has to be more performant than writes. User tends to find it easier to accept a slower response when data is changed. This also fits really nicely with the CQRS way of working.
+  - By splitting the application into two components, it allows you to build and think separately about two different models: commands and queries. This really helps making better API's which are easier to maintain. It's totally clear where changes are needed (command side or query side).
+- CQRS really puts state in the forefront of your design, implementation and test efforts which is a really good thing.
 - Eventsourcing makes testing a breeze
-- CQRS aggregates really put state in the forefront of your design, implementation and test efforts which is a really good thing.
+- If something goes wrong on the query side of your code it is pretty easy to put things straight again: Just fix the bug, delete the data and replay the events with the bugfree component.
 
 ### Cons
 
 - Learning curve
-- You cannot changed the event history. You can create compensating events and you can even upcast events, but this is often a lot more complex than fixing the bug and performing a database cleanup with a script. 
+- Immutable event history. You cannot change the event history. You can create compensating events and you can even upcast events, but this is often a lot more complex than fixing the bug and performing a database cleanup with a script in a 'normal' CRUD application.
 - Fairly new kid on the block and therefore sometimes hard to find help / information.
 
-- Strong / Weak
-- Tarpit criteria
-- Framework selection criteria (James Shore)
+Previous pros and cons are somewhat arbitrary chosen. Let's try to view it from a more 'inter-subjective' point of view. For this, I'd like to use the very often cited "out of the tar pit" paper (2006) by Moseley and Marks.
+
+### Tarpit criteria
+
+In "out of the tarpit" Moseley and Marks claim that complexity is the single major difficulty in the successful development of large-scale software systems. Since *understanding a system* is a prerequisite for avoiding all sorts of problems when working with it, and complexity destroys the ability to understand a system, they state that complexity is the root cause of the vast majority of problems with software.
+
+
+
+
+
+### Framework selection criteria (James Shore)
+
 
 **TODO:** Add pros and cons and sort them in order of priority
 
@@ -119,6 +131,7 @@ Integration with other applications can be cumbersome work. The strict definitio
 
 - Datomic
 - PGQ
+- Reporting database
 
 ## Brainfarts
 
@@ -127,3 +140,4 @@ Fire and forget: reply from the command handler generally does not contain every
 CQRS will never be applicable to a whole application; part of it may be for single user doing CRUD, with other parts more collaborative and suitable for CQRS. Fowler: In particular CQRS should only be used on specific portions of a system (a Bounded Context in DDD lingo) and not the the system as a whole. In this way of thinking, each Bounded Context needs its own decisions on how it should be modeled.
 
 I did a littlebench mark on my laptop and I can store around 180,000 events per second on my spinning disc and on my laptop which is more than most applications will ever need anyway. [Alard on infoq on 2014-05-13](http://www.infoq.com/interviews/allard-buijze-cqrs-event-sourcing)
+
