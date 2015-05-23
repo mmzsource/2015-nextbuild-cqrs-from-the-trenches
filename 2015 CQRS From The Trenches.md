@@ -67,6 +67,8 @@ I would like to underline some aspects of this picture.
 
 **TODO:** better architecture picture (mainly bigger. SVG?)
 
+{>>Should we mention eventual consistency here? In my experience a lot of people have trouble grasping this concept as it appears to them as a loss of control.<<}
+
 ## Why should u use it (or not)
 
 Now the big question is: why should you use this pattern, or shouldn't you? 
@@ -80,7 +82,7 @@ In the end, CQRS is just another tool in the toolbox, well suited for some tasks
   - By splitting the application into two components, it allows you to build and think separately about two different models: commands and queries. This really helps making better API's which are easier to maintain. It's totally clear where changes are needed (command side or query side).
 - CQRS really puts state in the forefront of your design, implementation and test efforts which is a really good thing.
 - Eventsourcing makes testing a breeze
-- If something goes wrong on the query side of your code it is pretty easy to put things straight again: Just fix the bug, delete the data and replay the events with the bugfree component.
+- If something goes wrong on the query side of your code it is pretty easy to put things straight again: Just fix the bug, delete the data and replay the events with the bugfree component. Besides the possibility of replaying events, having an event log available significantly simplifies reproduction of bugs (just replay the events which caused the issue).
 
 ### Cons
 
@@ -94,12 +96,33 @@ Previous pros and cons are somewhat arbitrary chosen. Let's try to view it from 
 
 In "out of the tarpit" Moseley and Marks claim that complexity is the single major difficulty in the successful development of large-scale software systems. Since *understanding a system* is a prerequisite for avoiding all sorts of problems when working with it, and complexity destroys the ability to understand a system, they state that complexity is the root cause of the vast majority of problems with software.
 
+From "Tarpit":
+- “...we have to keep it crisp, disentangled, and simple if we refuse to be crushed by the complexities of our own making...” – Dijkstra
+- Approaches to understanding:
+	- Testing
+		- Commands, events, and aggregates allow for awesome testing (state verification, yay!). Axon even allows this without direct interaction with the test subject.
+	- Informal Reasoning
+		- See Complexity caused by Control. If the system can be split into clean and simple components this allows for great informal reasoning. If that's harder to do, I think CQRS makes it difficult to understand a system.
+- Causes of complexity:
+	- Complexity caused by State
+		- CQRS imho scores great on this front as it forces you to think about state on a lot of fronts (what to "store" in aggregates, what to store in read models) and all mutations happen using immutable (pure?) commands.
+	- Complexity caused by Control
+		- If your application can be split up into cleanly separated components CQRS *can* score great on this front (e.g. Motown add-ons are really easy to grasp as they deliver a specific piece of functionality and interact with the domain using commands and events). However, when defining more straight-forward functionality (e.g. CRUD with a bit of business logic, which is a **major** part of **a lot** of applications) it is often a cause for complexity as you have to follow the flow of commands and events over multiple components.
+		- "In cases (such as existing large systems) where this separation cannot be directly applied we believe the focus should be on avoiding state, avoiding **explicit** control where possible, and striving at all costs to get rid of code."
+	- Complexity caused by Code Volume
+		- Not sure what the impact of CQRS is here. In my experience it's pretty verbose (i.e. commands, events) but it does allow for cleanly separated components (which tend to be easier to grasp by themselves). What are your experiences here?
+- Accidents and Essence:
+	- Essential Complexity: is inherent in, and the essence of, the problem (as seen by the users).
+		- We hence see essential complexity as “the complexity with which the team will have to be concerned, even in the ideal world”.
+	- Accidental Complexity: is all the rest — complexity with which the development team would not have to deal in the ideal world (e.g. complexity arising from performance issues and from suboptimal language and infrastructure). https://www.dropbox.com/s/42xfqu0ivts3jp4/Screenshot%202015-05-16%2016.24.59.png?dl=0
+	- 
 
 
 
 
 ### Framework selection criteria (James Shore)
 
+{>>@MMz_, can you add a link to an article by James Shore? I can't find this on the interwebs.<<}
 
 **TODO:** Add pros and cons and sort them in order of priority
 
@@ -129,9 +152,10 @@ Integration with other applications can be cumbersome work. The strict definitio
 
 ## Alternatives
 
-- Datomic
-- PGQ
+- Datomic {>>@MMz_, I think you know the most about Datomic. I think I know why it's an alternative to event sourcing with regards to the acknowledgement of time as a concept but maybe you can elaborate on this.<<}
+- PGQ -> alternative to event sourcing?
 - Reporting database
+- Architectural concepts within DDD, CQRS seems like an event-driven evolution of these. If going all-in CQRS doesn't seem like a fit, DDD could be the sweet spot. (plain ol' CRUD > DDD > CQRS)
 
 ## Brainfarts
 
