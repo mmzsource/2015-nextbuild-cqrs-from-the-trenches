@@ -23,7 +23,7 @@ Although we've been using Axon for our CQRS projects, this talk is not about Axo
 
 ### Hype? 
 
-<Screenshot of google trend>
+[Google Trend](http://www.google.com/trends/explore#q=cqrs)
 
 (The numbers on the graph reflect how many searches have been done for a particular term, relative to the total number of searches done on Google over time. They don't represent absolute search volume numbers, because the data is normalized and presented on a scale from 0-100.)
 
