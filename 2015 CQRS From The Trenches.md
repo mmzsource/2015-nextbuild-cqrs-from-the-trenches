@@ -29,7 +29,7 @@ Although we've been using Axon for our CQRS projects, this talk is not about Axo
 
 ### Just an old pattern?
 
-The CQRS pattern was first introduced by Greg Young and Udi Dahan. They took inspiration from a pattern called Command Query Separation which was defined by Bertrand Meyer in his book “Object Oriented Software Construction” (1988). The main idea behind Command Query Separation is: “A method should either change the state of an object, or return a result, but not both. In other words, asking the question should not change the answer.
+The CQRS pattern was first introduced by Greg Young and Udi Dahan. They took inspiration from a pattern called Command Query Separation which was defined by Bertrand Meyer in his book “Object Oriented Software Construction” (1988). The main idea behind Command Query Separation is: A method should either change the state of an object, or return a result, but not both. In other words, asking the question should not change the answer.
 
 CQRS goes some steps further than Meyer's idea.
 
@@ -47,14 +47,30 @@ A **Query** is a question or a request for information about something. Examples
 
 Another important CQRS term is **Event**. An event describes something that has occurred in the application. Examples: UserLoggedIn, ItemAddedToCart, or MachineStarted. Events loosely couple all components in your application together.
 
-Another term related to CQRS is **EventSourcing** although it's possible to build a CQRS system with and without it. We've been using eventsouring in all of our CQRS projects up until now and we'll get into the pros and cons soon. In short eventsourcing means storing current state as a series of events. It means letting your events be the origin of all changes. In other words, changes will occur as a result of an event. The event stream that results is the overview of all changes that ever occurred in the system. If a repository needs to rebuild a domain object from storage, it will replay all past events.
+Another term related to CQRS is **EventSourcing** although it's possible to build a CQRS system with and without it. We've been using eventsouring in all of our CQRS projects up until now and we'll get into the pros and cons soon. In short, eventsourcing means storing current state as a series of events. It means letting your events be the origin of all changes. In other words, changes will occur as a result of an event. The event stream that results is the overview of all changes that ever occurred in the system. If a repository needs to rebuild a domain object from storage, it will replay all past events.
 
 Now it's time to glue these concepts together: ![Architecture overview](http://www.axonframework.org/docs/2.3/images/detailed-architecture-overview.png)
 
+1. The User (or actually any client) generates a **command** by requesting some form of change.
+2. The CommandHandler is responsible for routing the command to the correct "Aggregate". An aggregate is an entity or group of entities that is always kept in a consistent state. It's a domain object responsible for guarding its own invariants. The state changes of aggregates result in the generation of Domain Events.
+3. The generated Events are stored in an event store and are published on an event bus.
+4. Event Handlers handle incoming events. They feed databases which can be sql, nosql, in memory, etc., all tuned to their specific clients.
+5. Specific clients **query** specific data from storage and are served by highly tuned 'microservices' which are totally tailored for these specific requests.
 
-**TODO:** better architecture picture (mainly bigger)
+I would like to underline some aspects of this picture. 
+
+- First of all, it's very clear that commands and queries are totally separated. The incoming commands and outgoing query results are loosely coupled by events.
+- Second: it's really important to understand the power of events; if I replay the events which are stored in the eventstore, I can build a totally new service based on all events which ever occurred in the system since the beginning and thereby add functionality without touching any existing code. 
+- Third: Since it's so easy to tailor my read-model (I just make a new one), I can deliver very specific data in no time. For instance, I could build a view which does nothing else than build up complicated monthly or yearly reports. No need to bother a central database with that task. Or I could build a view which combines several domain objects into information completely tailored to my needs. Again: no need to do complex joins on a central database.
+
+
+**TODO:** better architecture picture (mainly bigger. SVG?)
 
 ## Why should u use it (or not)
+
+Now the big question is: why should you use this pattern, or shouldn't you? 
+
+In the end, CQRS is just another tool in the toolbox, well suited for some tasks, but completely unusable for others. Let's discuss some general advantages and disadvantages before zooming into our experiences in practice.
 
 - Pro / cons
 - Strong / Weak
