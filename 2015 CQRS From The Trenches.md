@@ -41,12 +41,12 @@ Although we've been using Axon for our CQRS projects, this talk is not about Axo
 
 Zoals ik het nu in de keynote outline heb gezet:
 
-[MM] - CQRS Terms & Architecture
-[MM] - CQRS & State [+ demo]
-[DL] - CQRS Reads & Writes [+ demo]
-[BG] - CQRS + Eventsourcing & Replay [+ demo]
-[DL] - CQRS - general evaluation
-[BG, DL, MM] - CQRS - from the trenches
+- [MM] - CQRS Terms & Architecture
+- [MM] - CQRS & State [+ demo]
+- [DL] - CQRS Reads & Writes [+ demo]
+- [BG] - CQRS + Eventsourcing & Replay [+ demo]
+- [DL] - CQRS - general evaluation
+- [BG, DL, MM] - CQRS - from the trenches
 
 ## WHAT is CQRS?
 
