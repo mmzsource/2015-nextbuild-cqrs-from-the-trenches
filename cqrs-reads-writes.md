@@ -27,7 +27,8 @@
 ### Queries
 
 - Where the interaction with the _Command_ model is new and shiny, the interaction with the _Query_ model should look familiar to everyone.
-- Developers interact with the _Query_ model in the exact same way they did before, with the exception that the state of the objects forming the model cannot be changed directly. They can only be changed by sending _Commands_ to the _Command_ model.
+- Developers interact with the _Query_ model in the exact same way they did before, with the exception that the state of the objects forming the model cannot be changed (directly).
+- As you can see these two models are completely separated but they come together at the user's end. The _Query_ model is used to provide the data for the user to interpret. Based on the data that is shown to the user he or she decides to perform a certain action. This action is translated into a _Command_ and this is sent to the _Command_ model. Based on the effects of this _Command_ the _Query_ model will be updated to represent the new state of the system.
 
 ## Demo
 
