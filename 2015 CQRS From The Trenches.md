@@ -19,6 +19,26 @@ Although we've been using Axon for our CQRS projects, this talk is not about Axo
   - Changing aggregates
 - Sample project?
 
+
+- [MM] Welcome
+- [MM] WHAT is CQRS
+- [MM] T&R
+- [??] 'Preview' of demo to illustrate terms & behavior
+- [MM] State verhaal 
+- [MM] Demo: show state changes based on commands 
+- [] Write model volledig los van read model
+- [] Show how easy it is to add a read model
+- [] Eventsourcing: yes or no?
+- [BG] Replay toelichting
+- [BG] Demo: show power of replay
+- [DL] Pros en Cons
+- [] Toelichten 'trenches'
+  - [] Learning curve
+  - [BG] koppeling met CRUD
+  - [] Changing events
+  - [] Changing aggregates
+
+
 ## WHAT is CQRS?
 
 ### Hype? 
@@ -120,13 +140,8 @@ From "Tarpit":
 
 ### Framework selection criteria (James Shore)
 
-{>>@MMz_, can you add a link to an article by James Shore? I can't find this on the interwebs.<<}
-  {>> http://www.letscodejavascript.com/v3/blog/2015/01/angular_review <<}
-
-{>>We should not confuse CQRS and Axon in the remarks below.<<}
-
-- Lock in: Boo! Because there is no generally accepted API / standard for CQRS frameworks, it's almost impossible to switch between different frameworks at the moment. {>>Agreed with regards to framework choice but lock in is a weird metric to measure *architecture* choices. Architectural choice always bring implicit lock in.<<}
-- Opinionated Architecture. Boo! From the axon documentation: "Axon does not, in any way, try to hide the CQRS architecture or any of its components from developers. Therefore, depending on team size, it is still advisable to have one or more developers with a thorough understanding of CQRS on each team." {>>This relates to Axon.<<}
+- Lock in: Boo! Because there is no generally accepted API / standard for CQRS frameworks, it's almost impossible to switch between different frameworks at the moment. 
+- Opinionated Architecture. Boo! From the axon documentation: "Axon does not, in any way, try to hide the CQRS architecture or any of its components from developers. Therefore, depending on team size, it is still advisable to have one or more developers with a thorough understanding of CQRS on each team." It's easy to see this is not Axon specific, but a general CQRS property since CQRS is so different from 'normal' CRUD applications.
 - Accidental Complexity. It's a toss up. There's a lot of learning involved in switching to CQRS. This takes time; time a customer probably isn't prepared to invest. Then again: extending and scaling the application is really easy. {>>None of the complexity is essential unless the customer has some really specific remarks. That doesn't make it the wrong choice though, I just think it isn't the *right* choice in a lot of circumstances. I would *always* consider bits and pieces of CQRS when making architectural choices.<<}
 - Testability. Yay! Especially when using eventsourcing, testing is fantastic. Also: repeating bugs in production is really easy.
 - Performance. {>> **TODO:** I don't know! Do we have some real world measurements on this one? <<} {>>I personally don't but I think the performance advantages are evident on a theoretical level. I just don't think most *regular* systems ever need this kind of performance :-). – Dennis <<}
