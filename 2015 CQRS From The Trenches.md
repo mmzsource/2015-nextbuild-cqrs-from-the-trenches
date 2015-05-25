@@ -210,6 +210,10 @@ CQRS will never be applicable to a whole application; part of it may be for sing
 
 I did a littlebench mark on my laptop and I can store around 180,000 events per second on my spinning disc and on my laptop which is more than most applications will ever need anyway. [Alard on infoq on 2014-05-13](http://www.infoq.com/interviews/allard-buijze-cqrs-event-sourcing)
 
+[MSDN CQRS](https://msdn.microsoft.com/en-us/library/dn568103.aspx)
+[MSDN Data consistency](https://msdn.microsoft.com/en-us/library/dn589800.aspx)
+
+
 ## Personal takeaways
 
 Room for some personal takeaways not yet represented in the texts above, these 
