@@ -1,8 +1,30 @@
 CQRS FROM THE TRENCHES
 ======================
 
-<!-- START doctoc -->
-<!-- END doctoc -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Welcome](#welcome)
+  - [Outline](#outline)
+- [WHAT is CQRS?](#what-is-cqrs)
+  - [Hype?](#hype)
+  - [The future of software engineering?](#the-future-of-software-engineering)
+  - [Just an old pattern?](#just-an-old-pattern)
+- [Terms & Relations](#terms-&-relations)
+- [Why should u use it (or not)](#why-should-u-use-it-or-not)
+  - [Pros](#pros)
+  - [Cons](#cons)
+  - [Tarpit criteria](#tarpit-criteria)
+  - [Framework selection criteria (James Shore)](#framework-selection-criteria-james-shore)
+- [WHEN should you use it?](#when-should-you-use-it)
+- [Real world experience](#real-world-experience)
+- [Alternatives](#alternatives)
+- [Brainfarts](#brainfarts)
+- [Personal takeaways](#personal-takeaways)
+  - [Dennis](#dennis)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Welcome
 
