@@ -1,6 +1,11 @@
 CQRS FROM THE TRENCHES
 ======================
 
+<!-- START doctoc -->
+<!-- END doctoc -->
+
+## Welcome
+
 Welcome to CQRS from the trenches. In this talk we'd like to give you a basic understanding of CQRS, and its place in the IT landscape. We'll focus on the main concepts, their relation and their behaviour. Together we've implemented and released 3 real world applications, running in production as we speak. 
 
 Although we've been using Axon for our CQRS projects, this talk is not about Axon, it's about general CQRS concepts. CQRS critique in this presentation is in no way related to Axon. Axon is a well written framework, with good documentation and support. 
