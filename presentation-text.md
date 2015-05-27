@@ -146,7 +146,11 @@ Now we're going to dive into Reading and Writing and Dennis will be explaining:
 
 ## Dennis on stage
 
+In building everyday CRUD application I've noticed ... <your read - write story here >
 
+... which brings us to the concept of state. 
+
+## Sheet state
 
 
 
