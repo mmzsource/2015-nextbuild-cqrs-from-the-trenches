@@ -254,3 +254,14 @@ Room for some personal takeaways not yet represented in the texts above, these
 - In most CRUD applications separating domain models from data models is considered "too much work" or "overhead" in the early phases of a project. In the later phases of a project, this often comes back to bite us in the ass. In CQRS with ES, there is no choice (but is this a good thing? :-)).
 - ES is the real MVP! All the rest is just fluff, conventions, and other stuff to make some related things easier. All of the actual power comes from ES.
 - On that note, it's no surprise Greg Young's "CQRS" book is called ["Event Centric"](http://www.amazon.com/Event-Centric-Simplicity-Addison-Wesley-Signature/dp/0321768221) :-)
+
+## Klad:
+
+In traditional data management systems, both commands (updates to the data) and queries (requests for data) are executed against the same set of entities in a single data repository.
+
+The traditional CRUD approach has some disadvantages:
+It often means that there is a mismatch between the read and write representations of the data, such as additional columns or properties that must be updated correctly even though they are not required as part of an operation. 
+It risks encountering data contention in a collaborative domain (where multiple actors operate in parallel on the same set of data) when records are locked in the data store, or update conflicts caused by concurrent updates when optimistic locking is used. These risks increase as the complexity and throughput of the system grows. In addition, the traditional approach can also have a negative effect on performance due to load on the data store and data access layer, and the complexity of queries required to retrieve information.
+It can make managing security and permissions more cumbersome because each entity is subject to both read and write operations, which might inadvertently expose data in the wrong context.
+
+Command and Query Responsibility Segregation (CQRS) is a pattern that segregates the operations that read data (Queries) from the operations that update data (Commands) by using separate interfaces. This implies that the data models used for querying and updates are different. The models can then be isolated.
