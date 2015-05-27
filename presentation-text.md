@@ -150,7 +150,12 @@ In building everyday CRUD application I've noticed ... <your read - write story 
 
 ... which brings us to the concept of state. 
 
-## Sheet state
+## Sheet Aggregate State
+
+
+
+## Sheet Shopping Cart State Machine
+
 
 
 
