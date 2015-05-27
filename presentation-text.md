@@ -24,7 +24,7 @@ Everybody in here expecting to be in the CQRS presentation?
     - Axon disclaimer
 -->
 
-Welcome to our CQRS presentation. We are Dennis Laumen, Ben van Gameren and Maarten Metz and we're colleagues working at IHomer. Our bio's and link to our company are on the nextbuild website in case your interested.
+Welcome to our CQRS presentation. We are Dennis Laumen, Ben van Gameren and Maarten Metz and we're colleagues working at IHomer. Our bio's and link to our company are on the nextbuild website in case you're interested.
 
 But we're not here for a marketing talk, we're here to talk about CQRS. From the trenches that is, since we've already got our hands dirty working with CQRS. Together we've implemented and released 3 real world applications, running in production as we speak. 
 
@@ -135,7 +135,7 @@ CQRS applications are scalable because I can tailor my infrastructure separately
 
 <!--
   Speaker: MM
-  Goal: Now couple terms and architecture in one picture and make sure everyone understands.
+  Goal: Couple terms and architecture in one picture and make sure everyone understands.
 -->
 
 So, where does that bring us? We have clients, firing commands to our application. And we have clients firing queries to our application. And both are handled by completely separated models.
@@ -145,6 +145,8 @@ Is that clear so far? Any questions?
 Now we're going to dive into Reading and Writing and Dennis will be explaining:
 
 ## Dennis on stage
+
+
 
 
 
