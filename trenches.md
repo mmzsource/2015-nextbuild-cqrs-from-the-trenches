@@ -1,3 +1,7 @@
+## Introduction
+
+We've explained the basic concepts of CQRS and I hope you agree, CQRS sounds great! But of course there are downsides to each approach. During this section we'd like to share some experiences with you.
+
 ## FEEDBACK
 
 One of the things I ran into when developing CQRS applications was the problem of feedback. 
@@ -14,6 +18,8 @@ But the CQRS model isn’t such a great match for the http request response mode
 	- still… even with a web socket API, the client somehow needs logic to deduce if the command got executed as expected. 
 - Make a transaction span all the way from commands to events. [see axon group](https://groups.google.com/forum/m/#!topic/axonframework/9xxPin4_Kdc)
 	- unfortunately, you’ll lose all possibilities of scaling when using this option (which is why you probably started with axon in the first place)
+
+{>>I think this piece deserves a mention of Task Based UIs. You _must_ think differently about your UI when using CQRS. That's not to state that the above is not valid, it's just adding on top of it. You __can not__ (properly) build a new CQRS backend using your old UI. CQRS is kind of all-or-nothing in that regard.<<}
 
 ## SET VALIDATION
 
@@ -34,7 +40,7 @@ For instance: a user aggregate wants to know if it can transit to a ‘user crea
 - Build an interceptor that checks the incoming create-commands against this query-model and rejects the command if it contains a duplicate username.
 	- this solution makes it harder to scale out (TODO: I think...)
 
-If you’re particularly interested in this topic, do a search on set validation and cars. That’ll ensure a nice spending of your weekend.
+If you’re particularly interested in this topic, do a search on set validation and cqrs. That’ll ensure a nice spending of your weekend.
 
 ## DUPLICATION
 
@@ -44,6 +50,8 @@ Another valid point popping up again and again: code duplication. Commands, Even
 - Use a DSL to generate all the duplicate stuff. This kinda solves the initial problem, but doesn’t solve the maintenance problem.
 
 TODO: what’s more to say? This just sucks and in my opinion and it’s worse than in most applications I’ve worked with so far. :(
+
+{>>I think this section deserves a bit of nuance. I agree there's overhead here. Especially in smaller systems but the ripple effect you're describing is only valid if commands, events, persistence, and API change at the same time. I'm sure this happens a lot during the development phase and I'm sure it will happen once a system goes to production but I would be worried if this happens all the time (maybe CQRS wouldn't be a good choice in this case?). Furthermore, I'm always wary of code reuse just for the sake of code reuse. Just because your internal representations change doesn't mean your API should change.<<}
 
 ## ITERATIVE DEVELOPMENT AND MAINTENANCE
 
@@ -61,7 +69,7 @@ For instance: my event needs to change. [Now what](https://groups.google.com/for
 You tell this to your maintenance department. Don’t be surprised to see confused faces. They are used to database upgrade scripts which run together with the deployment of the enhanced application. They have tools for that. Now this doesn’t mean it’s the only way or the best way, but it’s what you’ll face in practice.
 
 I guess this is a general issue. As developers, maintenance is not always the first thing on our mind when developing applications. But the maintenance phase actually costs 40 - 80% of the total lifecycle cost of the application. Just let that sink in… Your teams development efforts are easily doubled or even tripled during maintenance...
-Robert Glass came up with the 60/60 rule after a meta study of software costs. On average 60% of the software cost is spend during maintenance of which 60% is consumed by enhancements (error correction consumes ~ 20%).
+Robert Glass came up with the 60/60 rule after a meta study of software costs. On average 60% of the software cost is spent during maintenance of which 60% is consumed by enhancements (error correction consumes ~ 20%).
 
 Now, before you all get over enthusiastic about CQRS, please consult some senior maintenance guys in your organisation. Ask them what they think about your bright and shiny new tool. I’m not kidding. Involve them. Make sure you have a shared vision. Do not force your solution onto a team which doesn’t have the know-how and the tooling to maintain it during its lifetime. 
 
@@ -79,7 +87,7 @@ For instance: in Holland you can request to have all your data removed from a sy
 
 This requirement made us separate user data and profiles from application data. The first being stored in CRUD systems and the second in event sourced systems. This enables me to delete a user from the CRUD database. Unfortunately there are no constraints (since it is not one physical database) which tell me I also need to delete related data. This means I can have events pointing to users which do not exist anymore. Null pointers for the win. 
 
-Of course there are solutions for this problem, but this just doesn’t feel right. It adds up. All these little issues, this not quite grasping how it should be designed, how it really should be implemented, how it should be maintained… This really costs a lot of time. Time you can’t bill your client for in my opinion, so be prepared to work and learn a lot in your own time. :-S
+Of course there are solutions for this problem, but this just doesn’t feel right. It adds up. All these little issues, this not quite grasping how it should be designed, how it really should be implemented, how it should be maintained… This really costs a lot of time. Time you can’t bill your client for in my opinion, so be prepared to work and learn a lot in your own time. :-S {>>I don't really agree on this last one ;-). Your client should get certain advantages because of your architectural choices. If they don't you made the wrong choice of architecture to begin with. If that means that there's some extra effort required in other parts of the system (which would've been easy with CRUD) it means he or she has to pay for those hours as well.<<}
 
 ## TRANSACTIONS
 
@@ -103,4 +111,6 @@ Just scanning the internet on questions about cqrs… you’ll notice there are 
 ## CREATIVITY
 
 Some general remark about creativity and constraints. I believe constraints stimulate creativity. With the tools I have and know, how can I solve the actual business problem? TODO... 
+
+## Granularity
 

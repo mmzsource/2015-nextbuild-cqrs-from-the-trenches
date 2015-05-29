@@ -37,17 +37,19 @@
 
 - Where the interaction with the _Command_ model is new and shiny, the interaction with the _Query_ model should look familiar to everyone.
 - Developers interact with the _Query_ model in the exact same way they did before, with the exception that the state of the objects forming the model cannot be changed (directly).
+- TODO: normalizing is normal
 - As you can see these two models are completely separated but they come together at the user's end. The _Query_ model is used to provide the data for the user to interpret. Based on the data that is shown to the user he or she decides to perform a certain action. This action is translated into a _Command_ and this is sent to the _Command_ model. Based on the effects of this _Command_ the _Query_ model will be updated to represent the new state of the system.
 
 ## Demo
 
 - We've mentioned a lot of terms so far. Let's see how this translates into an actual application. We've prepared an example project revolving around the familiar shopping cart.
 - What do we want to illustrate in the demo?
+	- Show separation between command and query interface. (in API project)
 	- Explain that we're using Axon here?
 	- We want to show what a _Command_ is. The fact that the action which should be performed is dependent upon the class name might appear strange to some people.
 	- We want to show how a _Command_ is sent. Contrary to a regular method call, there is a disconnect between the code performing the action and the code requesting the action (this might be dependent on the CQRS implementation, but this is the case with Axon).
-	- We want to show that a sent _Command_ leads to a changed _Query_ model.
-	- We want to show how different the _Query_ models can be (e.g. an audit log, a more relational model).
+	- We want to show that a sent _Command_ leads to a changed _Query_ model. (If we do this,explain the UI that the buttons lead to commands, and the state is fetched from the Query model on the server).
+	- {--We want to show how different the _Query_ models can be (e.g. an audit log, a more relational model).--}
 
 ## Concluding
 
