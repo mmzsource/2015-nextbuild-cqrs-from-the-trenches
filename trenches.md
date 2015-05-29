@@ -46,7 +46,7 @@ There are [a couple of basic ways to handle this:](https://groups.google.com/for
 - Let the command handler keep a "used usernames" table, in which it updates and reads the usernames being used
 	- This could easily break down when you’re having a *lot* of users, killing performance
 - Detect the duplicates in the Event Handler that updates the query model. When a duplicate is detected, the second account should be blocked.
-	- but this means sending commands from event handlers which isn’t recommended, because … TODO
+	- but this means sending commands from event handlers which isn’t recommended...
 - Use a 2-step process where a Saga confirms an account.
 	- in my opinion this option feels best from a CQRS point of view (some sort of requested new user account state and after a check in the saga a account created state). But if you take a step back, you might wonder if this is really ‘better’ when compared to a normal CRUD application. It involves some extra complexity.
 - Build an interceptor that checks the incoming create-commands against this query-model and rejects the command if it contains a duplicate username.
