@@ -152,10 +152,35 @@ In building everyday CRUD application I've noticed ... <your read - write story 
 
 ## Sheet Aggregate State
 
+Now we all love state machines, don't we? In CQRS we have aggregates (an entity or group of entities which is always kept in a consistent **state**). Aggregates are essentially state machines. Their inputs are commands, they decide internally if they can transit to a new state and if this is the case they throw out an event.
 
+Actually, all the aggregate should know is everything needed to decide to go from one state to the next. 
+
+I think this can be nicely illustrated with our demo project.
+
+For instance, from a high level, this is our state model for our shopping cart.
 
 ## Sheet Shopping Cart State Machine
 
+As you can see, it's a really simple state machine. 
+
+(Explain states and state transitions on the sheet).
+
+Now let's see if we can map this illustration of our state machine to the actual implementation in the project.
+
+(show source code)
+
+As you can see, the mapping is very clear and the state is very explicit which makes it a lot easier to reason about.
+
+And now for the big showstopper: it's really easy to test state machines in general, but Axon makes it even easier for us:
+
+(show test code)
+
+## Sheet "Demo Time"
+
+(Show demo - without event sourcing!)
+
+## Optional: sheet state charts & CQRS
 
 
 
