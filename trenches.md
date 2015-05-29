@@ -1,6 +1,6 @@
 ## FEEDBACK
 
-One of the thing I ran into when developing CQRS applications was the problem of feedback. 
+One of the things I ran into when developing CQRS applications was the problem of feedback. 
 Most of the applications I build are web applications. They use HTTP Requests and Responses as their main communication model.
 This request response model is a nice match with user interaction requirements for user based systems. One thing I learned is that users come to an application with certain goals. They search the user interface for controls which best match their goals. When they use these user interface controls they want to know if they reached their goal, if this control triggered the system to actually meet their goal. In other words: they want feedback.
 
