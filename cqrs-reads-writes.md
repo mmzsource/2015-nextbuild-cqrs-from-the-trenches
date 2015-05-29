@@ -49,4 +49,11 @@
 	- We want to show that a sent _Command_ leads to a changed _Query_ model.
 	- We want to show how different the _Query_ models can be (e.g. an audit log, a more relational model).
 
-{>>TODO: we haven't mentioned here why we'd like to split these two concepts.<<}
+## Concluding
+
+- We've seen how separating _Reads_ from _Writes_ gives us some real advantages.
+- We can add multiple (functionally different) _Query_ models without touching existing code.
+- We can use the technologies which best fits the model we're building.
+- We can scale _Reads_ separately from _Writes_. Most applications are really _Read_ heavy, so that's great.
+- Lastly, we've seen in the demo what _Commands_ look like and how we can send them to our domain model.
+- Maarten will tell us what will happen once _Commands_ reach the domain model in the next section of our talk, CQRS & State.
