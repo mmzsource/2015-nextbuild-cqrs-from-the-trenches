@@ -81,6 +81,21 @@ This requirement made us separate user data and profiles from application data. 
 
 Of course there are solutions for this problem, but this just doesn’t feel right. It adds up. All these little issues, this not quite grasping how it should be designed, how it really should be implemented, how it should be maintained… This really costs a lot of time. Time you can’t bill your client for in my opinion, so be prepared to work and learn a lot in your own time. :-S
 
+## TRANSACTIONS
+
+Some 'already solved' problems pop up again when using cqrs. For instance: [transactions](https://groups.google.com/forum/m/#!topic/axonframework/ckHMUF-Th4g). Things you haven't been thinking about for years now rear up their ugly head again. Take for instance 2PC (Two Phase Commit) between eventstore and event bus... implemented yourself. Or... taking the conceptual leap from ACID to BASE. Really cool to learn, but is there enough time and business value to make the transition?
+
+Alard Buijze [on infoq](http://www.infoq.com/articles/cqrs_with_axon_framework): 
+
+> The traditional layered architecture is not one that supports scalability very well. Transaction management is a very heavy process in a scaled environment. XA transactions (... a transaction that affects more than one resource) ask for a big price to pay on each transaction, while only one-in-many transactions actually go wrong. CQRS uses asynchronous updates through events. **If any conflicting event is found (e.g. an item was bought, but the item is not in stock), we need to fix that in a compensating transaction.** It is effectively the ACID vs. BASE discussion. It really is something that we (as developers) have to get used to. We have to educate ourselves, and our customers that things just go wrong from time to time. Instead of presenting the error to the user (with the default "please try again later" screen), we try to solve it in the background. </br>
+How information is queried, such as in the sharded databases you described, is really up to the developers to decide. **With CQRS, you can make a different choice for different parts of your application. All these different parts are updated by the same source: the events.** 
+
+ACID: Atomicity, Consistency, Isolation, Durability - the set of properties that guarantee that database transactions are processed reliably.
+
+BASE: Basically Available, Soft state, Eventual consistency (BASE), a consistency model.
+
+Now, if an expert like Alard says something like that, I think you should really consider it. Can your team and your maintenance department handle the conceptual transition? Can you foresee the nasty problems that might pop up? Are you experienced enough on the subject? 
+
 ## PROBLEMS WITH CQRS CONCEPTS
 
 Just scanning the internet on questions about cqrs… you’ll notice there are a lot of conceptual questions. The same is true on the axon mailing list. And it’s not just newbies asking stuff. There is a big conceptual leap to be made which involves several levels of understanding. It sometimes feels like an onion; when you think you hit the core, there’s yet another layer of understanding. And at some point it’s just natural to start crying while peeling this onion to its core. ;-)
