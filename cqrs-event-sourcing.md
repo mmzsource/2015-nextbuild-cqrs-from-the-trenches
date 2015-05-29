@@ -16,45 +16,15 @@
 - Why is CQRS an awesome fit for Event Sourcing? Mutating state in CQRS works by sending _Commands_ to _Aggregates_. If we have the concept of _Commands_ (request for action) as the input for our state machines it's a natural step to add _Events_ (actions that have occurred) as the output for our state machines. This makes it relatively straight-forward to turn our _Command_ based system into an _Event Sourced_ system.
 - [Show architecture overview with multiple Query models]
 - Why is Event Sourcing an awesome fit for CQRS? One of the missing links in the pictures we've shown you before is the relationship between the Command and the Query model. We can build one of these Query models by receiving Events from an Aggregate. That's all fine, but what if we'd like to add a new Query model. (e.g. removed items from shopping cart?).
-- Event Sourcing opens up the possibility of a new Query Model by...
-- General advantages of Event Sourcing. replaying, bugs, deploying and rolling back.
-- Optimization with snapshots?
+- Because our events are being stored, we can access them after the fact to build up our Query models. We call this _Replaying_ _Events_. Adding a new _Query_ model after the fact allows us to create new projections on existing data.
+- What if we would've chosen a traditional _current state_ approach to our persistence and our users would've asked us for a simple new feature: a report which shows items which were removed from our Shopping Cart. In this situation we could've written some more code which tracks every occurrence of this action and stores this in a new database table. This already sounds like _Commands_ and _Events_ doesn't it? But let's keep it old school and continue on this track. This code change would've added this functionality, we would've deployed it to production and our users would log in to see their fancy new report with... no data. Because the data doesn't exist before this deployment.
+- If we would've built this new report on top of an event sourced system the results would have been very different. We would've deployed the new feature, the new software would've built up its database from past events we would've stored and our users would log in to see their fancy new report with... all of the available historical data!
+- There is tremendous business value in storing the events instead of just the current state. It allows us to look from a different perspective at our data because we used a lossless persistence strategy.
+- [demo with replaying? show event store first?]
+- Event Sourcing offers more advantages. For example, what if a user sends us a bug report. We try to reproduce it and fail... I guess that never happened to anyone, right? In an Event Sourced system we ask our users for information regarding the bug and can check the database for the exact series of _Events_ that lead to the bug. We can export those events to our local development environment and use them for debugging, testing, and fixing the bug.
+- Another advantage would be when deploying a new version to production. I think most of us write scripts which upgrade our database schemas to the new version our software needs. But how many people write a downgrade script for when the production deployment fails and we need to roll back? With Event Sourcing, you get all this for free as you can just install the old version of the software again, replay all the events from the past and bring the system back into a consistent state.
 
 
 
-
-
-
-
-
-
-
-
-
-
-- Comparison with Git, VCS.
-- We use Event Sourced systems everyday
-
-- aggregates generate events (check with overlap state chapter)
-- events are published to listeners
-- events are stored in event store
-
-- events can be replayed to regenerate state
-- reproduce bugs
-
-- this is how the query models get built
-- this allows you to add query models after the fact
-
-- codewise, events are comparable to commands
-- verleden tijd qua namen
-- een event is iets dat plaats heeft gevonden
-- show event store in slides
-- bij commands noemen dat t opdrachten zijn qua grammar
-- snapshots noemen?
-- impedence mismatch noemen bij read wrote verhaal
-- business value of event log
-
-- there are no deletes
-- a delete is just an event stating certain info is no longer valid
-- personal information?
-- 
+term: projections?
+should we even mention snapshotting or ask for the questions?
