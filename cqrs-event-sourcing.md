@@ -23,6 +23,11 @@
 - [demo with replaying? show event store first?]
 - Event Sourcing offers more advantages. For example, what if a user sends us a bug report. We try to reproduce it and fail... I guess that never happened to anyone, right? In an Event Sourced system we ask our users for information regarding the bug and can check the database for the exact series of _Events_ that lead to the bug. We can export those events to our local development environment and use them for debugging, testing, and fixing the bug.
 - Another advantage would be when deploying a new version to production. I think most of us write scripts which upgrade our database schemas to the new version our software needs. But how many people write a downgrade script for when the production deployment fails and we need to roll back? With Event Sourcing, you get all this for free as you can just install the old version of the software again, replay all the events from the past and bring the system back into a consistent state.
+- {>>We hebben hier een afsluiter nodig.<<} Concluding, Event Sourcing is a really powrful concept. It's really the cherry on top of the CQRS pie as it truly _enables_ CQRS and adds real business value on top of that.
+- Now on to the demo! What do we want to show in a demo?
+	- Show the different Query Models in the database (maybe that's already covered before?)
+	- Show the event store and explain what is being stored.
+	- Add new functionality by Replaying! (show database before and after to "prove" we're not cheating here)
 
 
 

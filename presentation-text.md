@@ -41,7 +41,7 @@ Although we've been using the Axon framework for our CQRS projects, this talk is
 
 Now it's time to move on to the structure of this presentation. 
 
-First of all we'd like to introduce the main terms and architecture and zoom in from there. You'll notice quickly how central the concept of reads and writes is in CQRS. The concept of writes is heavily related to state which is the next subject. After that, we'll introduce another important concept which is eventsourcing. At that point, you'll know enough about CQRS to be able to understand our general evaluation of it. Finally, we'll zoom into our general evaluation and zoom in to some subjects we like and dislike about CQRS.
+First of all we'd like to introduce the main terms and architecture and zoom in from there. You'll notice quickly how central the concept of reads and writes is in CQRS. The concept of writes is heavily related to state which is the next subject. After that, we'll introduce another important concept which is event sourcing. {>>TODO change this part if the order in our outline changes.<<}At that point, you'll know enough about CQRS to be able to understand our general evaluation of it. Finally, we'll zoom into our general evaluation and zoom in to some subjects we like and dislike about CQRS.
 
 Since we'll cover a lot of ground, you're invited at any time to ask questions.
 
@@ -65,7 +65,7 @@ Basically CQRS is an architectural pattern that says that instead of having one 
   Goals: Give the audience a first glimps of WHY you would want CQRS
 -->
 
-We'll dive into the WHY and HOW a lot deeper, but let me give you a glimps of one of the main goals of CQRS: CQRS aims to help developers build scalable and extensible applications. Bear with me, we'll explain in detail what separation of writes and reads has to do with that. But let's first discuss two other important terms: commands (or writes) and queries (or reads)
+We'll dive into the WHY and HOW a lot deeper, but let me give you a glimpse of one of the main goals of CQRS: CQRS aims to help developers build scalable and extensible applications. Bear with me, we'll explain in detail what separation of writes and reads has to do with that. But let's first discuss two other important terms: commands (or writes) and queries (or reads)
 
 ## Sheet 6 - Command
 
