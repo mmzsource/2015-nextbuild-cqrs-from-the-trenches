@@ -6,26 +6,38 @@ We've explained the basic concepts of CQRS and I hope you agree, CQRS sounds gre
 
 One of the things I ran into when developing CQRS applications was the problem of feedback. 
 Most of the applications I build are web applications. They use HTTP Requests and Responses as their main communication model.
-This request response model is a nice match with user interaction requirements for user based systems. One thing I learned is that users come to an application with certain goals. They search the user interface for controls which best match their goals. When they use these user interface controls they want to know if they reached their goal, if this control triggered the system to actually meet their goal. In other words: they want feedback.
 
 But the CQRS model isn’t such a great match for the http request response model; sending commands is meant to be ‘fire and forget’. There is no feedback (well, maybe some feedback that the command was received). For instance: after sending a request for updating or creating some data, the client will only receive a response which essentially states ‘ok, I’ve heard you’. The options are:
 
 - Sending out a new query to receive the updated content 
 	- But you’re not sure if the model is already updated… how many times should you retry before you can conclude the command wasn’t executed
 	- performance wise not a great option, especially with high latency networks
-- Building a separate web socket API with some sort of data binding (e.g. meteors DDP protocol)
-	- I feel we’re dealing with accidental complexity here… In case you’re having doubts, ask your users or project manager if this is essential
-	- still… even with a web socket API, the client somehow needs logic to deduce if the command got executed as expected. 
 - Make a transaction span all the way from commands to events. [see axon group](https://groups.google.com/forum/m/#!topic/axonframework/9xxPin4_Kdc)
 	- unfortunately, you’ll lose all possibilities of scaling when using this option (which is why you probably started with axon in the first place)
+- Building a separate web socket API with some sort of data binding (e.g. meteors DDP protocol)
+	- I feel we’re dealing with accidental complexity here… In case you’re having doubts, ask your users or project manager if this is essential
 
-{>>I think this piece deserves a mention of Task Based UIs. You _must_ think differently about your UI when using CQRS. That's not to state that the above is not valid, it's just adding on top of it. You __can not__ (properly) build a new CQRS backend using your old UI. CQRS is kind of all-or-nothing in that regard.<<}
+## CQRS UI Consequences
+
+[This request response model is a nice match with user interaction requirements for user based systems. One thing I learned is that users come to an application with certain goals. They search the user interface for controls which best match their goals. When they use these user interface controls they want to know if they reached their goal, if this control triggered the system to actually meet their goal. In other words: they want feedback.]
+
+You _must_ think differently about your UI when using CQRS. That's not to state that the above is not valid, it's just adding on top of it. You __can not__ (properly) build a new CQRS backend using your old UI. CQRS is kind of all-or-nothing in that regard.
+
+## Match with REST
+
+REST - in it's purest sense - is actually pretty CRUD based POST, GET, PUT, DELETE, while CQRS commands are intent based. There are pragmatic solutions of course, but we noticed this.
 
 ## SET VALIDATION
 
 Now this is a nice discussion popping up again and again when talking about CQRS. The problem is essentially this: my aggregate doesn’t know enough to make the transition to another state. It must consult something outside the aggregate to make an informed decision. 
 
-For instance: a user aggregate wants to know if it can transit to a ‘user created’ state and publish a user created event. But it can only do that if it’s totally sure there’s no other user with the same username and therefore it has to consult some sort of user repository. There are [a couple of basic ways to handle this:](https://groups.google.com/forum/#!msg/axonframework/RZ4D6kzbPjU/1azyCD0gcE0J
+For instance: a user aggregate wants to know if it can transit to a ‘user created’ state and publish a user created event. But it can only do that if it’s totally sure there’s no other user with the same username and therefore it has to consult some sort of user repository. 
+
+There are options to handle this, but they are not intuitive (from a CRUD point of view) and add complexity.
+
+<!--
+
+There are [a couple of basic ways to handle this:](https://groups.google.com/forum/#!msg/axonframework/RZ4D6kzbPjU/1azyCD0gcE0J
 )
 
 - Have the command handler execute a query to validate uniqueness. This means accepting the very small chance of a duplicate when two users register the same name at approximately the same time. 
@@ -40,11 +52,17 @@ For instance: a user aggregate wants to know if it can transit to a ‘user crea
 - Build an interceptor that checks the incoming create-commands against this query-model and rejects the command if it contains a duplicate username.
 	- this solution makes it harder to scale out (TODO: I think...)
 
+-->
+
 If you’re particularly interested in this topic, do a search on set validation and cqrs. That’ll ensure a nice spending of your weekend.
 
 ## DUPLICATION
 
-Another valid point popping up again and again: code duplication. Commands, Events, Entities and DTOs all sharing the same sort of properties. Just check out the cqrs and / or axon sample projects and you’ll see what I mean. I’ve noticed it in my own projects as well. This unfortunately means changes ripple out through all layers of the application. Which is not a very nice property. There are mainly 2 options here:
+Another valid point popping up again and again: code duplication. Commands, Events, Entities and DTOs all sharing the same sort of properties. Just check out the cqrs and / or axon sample projects and you’ll see what I mean. I’ve noticed it in my own projects as well. Maybe it's because I use CQRS wrong, or applied it to the wrong project, but I'm not alone here, just check the axon mailing list for example.  
+
+<!--
+
+There are mainly 2 options here:
 
 - Use value objects throughout the whole application, which carry around the shared properties. This is a nice option although it smells a little bit like you’re actually wanting one model. But it’s just a smell.
 - Use a DSL to generate all the duplicate stuff. This kinda solves the initial problem, but doesn’t solve the maintenance problem.
@@ -52,6 +70,8 @@ Another valid point popping up again and again: code duplication. Commands, Even
 TODO: what’s more to say? This just sucks and in my opinion and it’s worse than in most applications I’ve worked with so far. :(
 
 {>>I think this section deserves a bit of nuance. I agree there's overhead here. Especially in smaller systems but the ripple effect you're describing is only valid if commands, events, persistence, and API change at the same time. I'm sure this happens a lot during the development phase and I'm sure it will happen once a system goes to production but I would be worried if this happens all the time (maybe CQRS wouldn't be a good choice in this case?). Furthermore, I'm always wary of code reuse just for the sake of code reuse. Just because your internal representations change doesn't mean your API should change.<<}
+
+-->
 
 ## ITERATIVE DEVELOPMENT AND MAINTENANCE
 
@@ -87,8 +107,15 @@ For instance: in Holland you can request to have all your data removed from a sy
 
 This requirement made us separate user data and profiles from application data. The first being stored in CRUD systems and the second in event sourced systems. This enables me to delete a user from the CRUD database. Unfortunately there are no constraints (since it is not one physical database) which tell me I also need to delete related data. This means I can have events pointing to users which do not exist anymore. Null pointers for the win. 
 
-Of course there are solutions for this problem, but this just doesn’t feel right. It adds up. All these little issues, this not quite grasping how it should be designed, how it really should be implemented, how it should be maintained… This really costs a lot of time. Time you can’t bill your client for in my opinion, so be prepared to work and learn a lot in your own time. :-S {>>I don't really agree on this last one ;-). Your client should get certain advantages because of your architectural choices. If they don't you made the wrong choice of architecture to begin with. If that means that there's some extra effort required in other parts of the system (which would've been easy with CRUD) it means he or she has to pay for those hours as well.<<}
+Of course, this is a general concern for distributed systems, but it's more of a problem when dealing with a stack of immutable events.
 
+## LEARNING CURVE
+
+Just scanning the internet on questions about cqrs… you’ll notice there are a lot of conceptual questions. The same is true on the axon mailing list. And it’s not just newbies asking stuff. There is a big conceptual leap to be made which involves several levels of understanding. It sometimes feels like an onion; when you think you hit the core, there’s yet another layer of understanding. And at some point it’s just natural to start crying while peeling this onion to its core. ;-)
+
+All these little issues, this not quite grasping how it should be designed, how it really should be implemented, how it should be maintained… This really costs a lot of time. Time you can’t bill your client for in my opinion, so be prepared to work and learn a lot in your own time before considering a CQRS based system. 
+
+<!--
 ## TRANSACTIONS
 
 Some 'already solved' problems pop up again when using cqrs. For instance: [transactions](https://groups.google.com/forum/m/#!topic/axonframework/ckHMUF-Th4g). Things you haven't been thinking about for years now rear up their ugly head again. Take for instance 2PC (Two Phase Commit) between eventstore and event bus... implemented yourself. Or... taking the conceptual leap from ACID to BASE. Really cool to learn, but is there enough time and business value to make the transition?
@@ -104,13 +131,9 @@ BASE: Basically Available, Soft state, Eventual consistency (BASE), a consistenc
 
 Now, if an expert like Alard says something like that, I think you should really consider it. Can your team and your maintenance department handle the conceptual transition? Can you foresee the nasty problems that might pop up? Are you experienced enough on the subject? 
 
-## PROBLEMS WITH CQRS CONCEPTS
+-->
 
-Just scanning the internet on questions about cqrs… you’ll notice there are a lot of conceptual questions. The same is true on the axon mailing list. And it’s not just newbies asking stuff. There is a big conceptual leap to be made which involves several levels of understanding. It sometimes feels like an onion; when you think you hit the core, there’s yet another layer of understanding. And at some point it’s just natural to start crying while peeling this onion to its core. ;-)
+## Axon
 
-## CREATIVITY
-
-Some general remark about creativity and constraints. I believe constraints stimulate creativity. With the tools I have and know, how can I solve the actual business problem? TODO... 
-
-## Granularity
+Great framework, Great documentation, Great service, constrains newbies in a good way.
 
