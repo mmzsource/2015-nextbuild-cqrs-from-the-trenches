@@ -6,14 +6,14 @@ This request response model is a nice match with user interaction requirements f
 
 But the CQRS model isn’t such a great match for the http request response model; sending commands is meant to be ‘fire and forget’. There is no feedback (well, maybe some feedback that the command was received). For instance: after sending a request for updating or creating some data, the client will only receive a response which essentially states ‘ok, I’ve heard you’. The options are:
 
-Sending out a new query to receive the updated content 
-But you’re not sure if the model is already updated… how many times should you retry before you can conclude the command wasn’t executed
-performance wise not a great option, especially with high latency networks
-Building a separate web socket API with some sort of data binding (e.g. meteors DDP protocol)
-I feel we’re dealing with accidental complexity here… In case you’re having doubts, ask your users or project manager if this is essential
-still… even with a web socket API, the client somehow needs logic to deduce if the command got executed as expected. 
-Make a transaction span all the way from commands to events [axon group](https://groups.google.com/forum/m/#!topic/axonframework/9xxPin4_Kdc)
-unfortunately, you’ll lose all possibilities of scaling when using this option (which is why you probably started with axon in the first place)
+- Sending out a new query to receive the updated content 
+	- But you’re not sure if the model is already updated… how many times should you retry before you can conclude the command wasn’t executed
+	- performance wise not a great option, especially with high latency networks
+- Building a separate web socket API with some sort of data binding (e.g. meteors DDP protocol)
+	- I feel we’re dealing with accidental complexity here… In case you’re having doubts, ask your users or project manager if this is essential
+	- still… even with a web socket API, the client somehow needs logic to deduce if the command got executed as expected. 
+- Make a transaction span all the way from commands to events. [see axon group](https://groups.google.com/forum/m/#!topic/axonframework/9xxPin4_Kdc)
+	- unfortunately, you’ll lose all possibilities of scaling when using this option (which is why you probably started with axon in the first place)
 
 ## SET VALIDATION
 
@@ -22,17 +22,17 @@ Now this is a nice discussion popping up again and again when talking about CQRS
 For instance: a user aggregate wants to know if it can transit to a ‘user created’ state and publish a user created event. But it can only do that if it’s totally sure there’s no other user with the same username and therefore it has to consult some sort of user repository. There are [a couple of basic ways to handle this:](https://groups.google.com/forum/#!msg/axonframework/RZ4D6kzbPjU/1azyCD0gcE0J
 )
 
-Have the command handler execute a query to validate uniqueness. This means accepting the very small chance of a duplicate when two users register the same name at approximately the same time. 
-this could break down easily with other use cases (high frequency of commands involving some sort of ordering for instance)
-this kind of feels like you actually wanted one domain model (commands and queries through the same domain) which is a valid choice in lots of cases!
-Let the command handler keep a "used usernames" table, in which it updates and reads the usernames being used
-This could easily break down when you’re having a *lot* of users, killing performance
-Detect the duplicates in the Event Handler that updates the query model. When a duplicate is detected, the second account should be blocked.
-but this means sending commands from event handlers which isn’t recommended, because … TODO
-Use a 2-step process where a Saga confirms an account.
-in my opinion this option feels best from a CQRS point of view (some sort of requested new user account state and after a check in the saga a account created state). But if you take a step back, you might wonder if this is really ‘better’ when compared to a normal CRUD application. It involves some extra complexity.
-Build an interceptor that checks the incoming create-commands against this query-model and rejects the command if it contains a duplicate username.
-this solution makes it harder to scale out (TODO: I think...)
+- Have the command handler execute a query to validate uniqueness. This means accepting the very small chance of a duplicate when two users register the same name at approximately the same time. 
+	- this could break down easily with other use cases (high frequency of commands involving some sort of ordering for instance)
+	- this kind of feels like you actually wanted one domain model (commands and queries through the same domain) which is a valid choice in lots of cases!
+- Let the command handler keep a "used usernames" table, in which it updates and reads the usernames being used
+	- This could easily break down when you’re having a *lot* of users, killing performance
+- Detect the duplicates in the Event Handler that updates the query model. When a duplicate is detected, the second account should be blocked.
+	- but this means sending commands from event handlers which isn’t recommended, because … TODO
+- Use a 2-step process where a Saga confirms an account.
+	- in my opinion this option feels best from a CQRS point of view (some sort of requested new user account state and after a check in the saga a account created state). But if you take a step back, you might wonder if this is really ‘better’ when compared to a normal CRUD application. It involves some extra complexity.
+- Build an interceptor that checks the incoming create-commands against this query-model and rejects the command if it contains a duplicate username.
+	- this solution makes it harder to scale out (TODO: I think...)
 
 If you’re particularly interested in this topic, do a search on set validation and cars. That’ll ensure a nice spending of your weekend.
 
@@ -40,8 +40,8 @@ If you’re particularly interested in this topic, do a search on set validation
 
 Another valid point popping up again and again: code duplication. Commands, Events, Entities and DTOs all sharing the same sort of properties. Just check out the cqrs and / or axon sample projects and you’ll see what I mean. I’ve noticed it in my own projects as well. This unfortunately means changes ripple out through all layers of the application. Which is not a very nice property. There are mainly 2 options here:
 
-Use value objects throughout the whole application, which carry around the shared properties. This is a nice option although it smells a little bit like you’re actually wanting one model. But it’s just a smell.
-Use a DSL to generate all the duplicate stuff. This kinda solves the initial problem, but doesn’t solve the maintenance problem.
+- Use value objects throughout the whole application, which carry around the shared properties. This is a nice option although it smells a little bit like you’re actually wanting one model. But it’s just a smell.
+- Use a DSL to generate all the duplicate stuff. This kinda solves the initial problem, but doesn’t solve the maintenance problem.
 
 TODO: what’s more to say? This just sucks and in my opinion and it’s worse than in most applications I’ve worked with so far. :(
 
@@ -53,12 +53,12 @@ CQRS actually supports extension really well; you can add views without touching
 
 For instance: my event needs to change. [Now what](https://groups.google.com/forum/#!topic/axonframework/oszj_jAzoHg)?
 
-have code that can handle both versions of the events
-use event upcasting
-Make the new fields Optional with sane default values
-notice when an event has changed too much and should become a new type of event
+- have code that can handle both versions of the events
+- use event upcasting
+- Make the new fields Optional with sane default values
+- notice when an event has changed too much and should become a new type of event
 
-You tell this to your maintenance department. Don’t be surprised to see confused faces. They are used to upgrade scripts. They have tools for that. Now this doesn’t mean it’s the only way or the best way, but it’s what you’ll face in practice.
+You tell this to your maintenance department. Don’t be surprised to see confused faces. They are used to database upgrade scripts which run together with the deployment of the enhanced application. They have tools for that. Now this doesn’t mean it’s the only way or the best way, but it’s what you’ll face in practice.
 
 I guess this is a general issue. As developers, maintenance is not always the first thing on our mind when developing applications. But the maintenance phase actually costs 40 - 80% of the total lifecycle cost of the application. Just let that sink in… Your teams development efforts are easily doubled or even tripled during maintenance...
 Robert Glass came up with the 60/60 rule after a meta study of software costs. On average 60% of the software cost is spend during maintenance of which 60% is consumed by enhancements (error correction consumes ~ 20%).
